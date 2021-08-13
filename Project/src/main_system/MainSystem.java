@@ -1,6 +1,6 @@
 package main_system;
 
-import javax.swing.JOptionPane;
+//import javax.swing.JOptionPane;
 
 import entities.Product;
 import entities.ProductDAO;

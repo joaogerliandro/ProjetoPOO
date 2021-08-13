@@ -25,17 +25,16 @@ public class ProductDAO implements IProduct
 	{
 		String sql = "insert into products " + 
 					 "(name, desc, price, amount)" +
-					 "values (?, ?, ?, ?, ?)";
+					 "values (?, ?, ?, ?)";
 
 		try 
 		{
 			PreparedStatement stmt = m_connection.prepareStatement(sql);
 			
-			//stmt.setLong(1, p.GetId());
-			stmt.setString(2, p.GetName());
-			stmt.setString(3, p.GetDescription());
-			stmt.setDouble(4, p.GetPrice());
-			stmt.setLong(5, p.GetAmount());
+			stmt.setString(1, p.GetName());
+			stmt.setString(2, p.GetDescription());
+			stmt.setDouble(3, p.GetPrice());
+			stmt.setLong(4, p.GetAmount());
 
 			stmt.execute();
 			stmt.close();
