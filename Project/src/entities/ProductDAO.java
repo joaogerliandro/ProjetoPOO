@@ -1,20 +1,19 @@
 package entities;
 
-import interfaces.IProduct;
+import exceptions.*;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Date;
 import java.util.List;
+import java.sql.Statement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
-import entities.ConnectionFactory;
+import java.util.Optional;
 
-public class ProductDAO implements IProduct
+public class ProductDAO extends ProductRepository
 {
-	private Connection m_connection;
-
 	public ProductDAO()
 	{
 		m_connection = new ConnectionFactory().GetConnection();
@@ -23,26 +22,37 @@ public class ProductDAO implements IProduct
     @Override
     public void Add(Product p) 
 	{
-		String sql = "insert into products " + 
-					 "(name, desc, price, amount)" +
-					 "values (?, ?, ?, ?)";
-
 		try 
 		{
-			PreparedStatement stmt = m_connection.prepareStatement(sql);
+			if (p == null)
+				throw new InvalidProductObj("Product object cannot be null");
+
+			PreparedStatement stmt = m_connection.prepareStatement(g_insertion_query, Statement.RETURN_GENERATED_KEYS);
 			
 			stmt.setString(1, p.GetName());
 			stmt.setString(2, p.GetDescription());
 			stmt.setDouble(3, p.GetPrice());
 			stmt.setLong(4, p.GetAmount());
 
-			stmt.execute();
+			stmt.executeUpdate();
+            try (ResultSet rs = stmt.getGeneratedKeys()) 
+			{
+                if (rs.next()) 
+				{
+                    p.SetId(rs.getLong(1));
+                }
+            } 
+			catch (SQLException s) 
+			{
+               throw s;
+            }
+
 			stmt.close();
 		}
-		catch (SQLException e) 
+		catch (Exception e)
 		{
 			JOptionPane.showMessageDialog(null, 
-				"Error to add product: " + e.toString(), 
+				"Error to add product: " + e.getMessage(), 
 				"Error", JOptionPane.ERROR_MESSAGE
 			);
 		}
@@ -51,19 +61,171 @@ public class ProductDAO implements IProduct
     @Override
     public List<Product> GetProducts() 
 	{
-        // TODO Auto-generated method stub
-        return null;
+        List<Product> result = new ArrayList<>();
+		
+        try (Statement stmt = m_connection.createStatement();
+             ResultSet rs = stmt.executeQuery(g_findall_query)) 
+		{
+            while (rs.next()) 
+			{
+				result.add(new Product(rs.getLong("id"), 
+									   rs.getString("name"),
+									   rs.getString("description"),
+									   rs.getDouble("price"),
+									   rs.getLong("amount")));
+            }
+        } 
+		catch (SQLException e) 
+		{
+            JOptionPane.showMessageDialog(null,
+				"Error to get products: " + e.getMessage(), 
+				"Error", JOptionPane.ERROR_MESSAGE
+			);
+        }
+
+        return result;
+    }
+
+	@Override
+	public Long Find(Product target)
+	{
+		if (target == null)
+			return -1L;
+
+		try (PreparedStatement stmt = m_connection.prepareStatement(g_findall_query);
+			 ResultSet rs = stmt.executeQuery(g_findall_query))
+		{			
+			while (rs.next())
+			{
+				Product result = new Product(rs.getLong("id"), 
+											 rs.getString("name"),
+											 rs.getString("description"),
+											 rs.getDouble("price"),
+											 rs.getLong("amount"));
+				
+				if (Product.Compare(target, result))
+					return result.GetId();
+			}
+		} 
+		catch (Exception e) 
+		{
+			JOptionPane.showMessageDialog(null,
+				"Error to edit product: " + e.getMessage(), 
+				"Error", JOptionPane.ERROR_MESSAGE
+			);
+		}
+
+		return -1L;
+	}
+
+	@Override
+	public Optional<Product> Find(Long product_id)
+	{
+		try (PreparedStatement stmt = m_connection.prepareStatement("select * from products where id=?"))
+		{
+			stmt.setLong(1, product_id);
+			ResultSet rs = stmt.executeQuery();
+			
+			if (rs.next())
+			{
+				return Optional.of(new Product(rs.getLong("id"), 
+											   rs.getString("name"),
+											   rs.getString("description"),
+											   rs.getDouble("price"),
+											   rs.getLong("amount")));
+			}
+
+			rs.close();
+		} 
+		catch (Exception e) 
+		{
+			JOptionPane.showMessageDialog(null,
+				"Error to edit product: " + e.getMessage(), 
+				"Error", JOptionPane.ERROR_MESSAGE
+			);
+		}
+
+		return Optional.empty();
+	}
+
+    @Override
+    public void Edit(Product target) 
+	{
+		// product does not exists
+		if (target == null || !Find(target.GetId()).isPresent())
+			throw new InvalidProductObj("invalid product object");
+		
+		try (PreparedStatement stmt = m_connection.prepareStatement(g_update_query))
+		{
+			stmt.setString(1, target.GetName());
+			stmt.setString(2, target.GetDescription());
+			stmt.setDouble(3, target.GetPrice());
+			stmt.setLong(4,   target.GetAmount());
+			stmt.setLong(5,   target.GetId());
+			stmt.execute();
+		} 
+		catch (Exception e) 
+		{
+			JOptionPane.showMessageDialog(null,
+				"Error to edit product: " + e.getMessage(), 
+				"Error", JOptionPane.ERROR_MESSAGE
+			);
+		}
     }
 
     @Override
-    public void Edit(Product p) 
+    public void Remove(Long product_id)
 	{
-        // TODO Auto-generated method stub
+		// nao precisa fechar o stmt, pois como ele está em parenteses no try,
+		// é fechado implicitamente pelo bloco
+		try (PreparedStatement stmt = m_connection.prepareStatement("delete from products where id=?")) 
+		{
+			stmt.setLong(1, product_id);
+			stmt.execute();
+			if (stmt.getUpdateCount() == 0)
+				throw new InvalidProductID("Invalid product id");
+        } 
+		catch (Exception e) 
+		{
+            JOptionPane.showMessageDialog(null,
+				"Error to remove product: " + e.getMessage(), 
+				"Error", JOptionPane.ERROR_MESSAGE
+			);
+        }
     }
 
-    @Override
-    public void Remove(Long product_id) 
+	@Override
+    public void RemoveAll()
 	{
-        // TODO Auto-generated method stub
-    }
+		try (PreparedStatement stmt = m_connection.prepareStatement("delete from products where true")) 
+		{
+			stmt.execute();
+        } 
+		catch (Exception e) 
+		{
+            JOptionPane.showMessageDialog(null,
+				"Error to remove all products: " + e.getMessage(), 
+				"Error", JOptionPane.ERROR_MESSAGE
+			);
+        }
+	}
+
+	@Override
+    public boolean Remove(Product target)
+	{
+		List<Product> database_products = GetProducts();
+		if (database_products.size() == 0)
+			return false;
+
+		for (Product product : database_products)
+		{
+			if (Product.Compare(product, target))
+			{
+				Remove(product.GetId());
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

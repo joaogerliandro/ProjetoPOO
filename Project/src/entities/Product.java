@@ -2,7 +2,7 @@ package entities;
 
 public class Product
 {
-    private Long   m_id;
+    private Long   m_id = 0L;
     private String m_name;
     private String m_description;
     private double m_price;
@@ -10,32 +10,26 @@ public class Product
 
     public Product()
     {
-        /*
-            ⢀⡴⠑⡄⠀⠀⠀⠀⠀⠀⠀⣀⣀⣤⣤⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ 
-            ⠸⡇⠀⠿⡀⠀⠀⠀⣀⡴⢿⣿⣿⣿⣿⣿⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀ 
-            ⠀⠀⠀⠀⠑⢄⣠⠾⠁⣀⣄⡈⠙⣿⣿⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀ 
-            ⠀⠀⠀⠀⢀⡀⠁⠀⠀⠈⠙⠛⠂⠈⣿⣿⣿⣿⣿⠿⡿⢿⣆⠀⠀⠀⠀⠀⠀⠀ 
-            ⠀⠀⠀⢀⡾⣁⣀⠀⠴⠂⠙⣗⡀⠀⢻⣿⣿⠭⢤⣴⣦⣤⣹⠀⠀⠀⢀⢴⣶⣆ 
-            ⠀⠀⢀⣾⣿⣿⣿⣷⣮⣽⣾⣿⣥⣴⣿⣿⡿⢂⠔⢚⡿⢿⣿⣦⣴⣾⠁⠸⣼⡿ 
-            ⠀⢀⡞⠁⠙⠻⠿⠟⠉⠀⠛⢹⣿⣿⣿⣿⣿⣌⢤⣼⣿⣾⣿⡟⠉⠀⠀⠀⠀⠀ 
-            ⠀⣾⣷⣶⠇⠀⠀⣤⣄⣀⡀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀ 
-            ⠀⠉⠈⠉⠀⠀⢦⡈⢻⣿⣿⣿⣶⣶⣶⣶⣤⣽⡹⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀ 
-            ⠀⠀⠀⠀⠀⠀⠀⠉⠲⣽⡻⢿⣿⣿⣿⣿⣿⣿⣷⣜⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀ 
-            ⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣷⣶⣮⣭⣽⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀ 
-            ⠀⠀⠀⠀⠀⠀⣀⣀⣈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀ 
-            ⠀⠀⠀⠀⠀⠀⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀ 
-            ⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀ 
-            ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠻⠿⠿⠿⠿⠛⠉
-        */
     }
 
-    public Product(String name, double price, 
-                   Long amount, String description) 
+    public Product(Long id, String name, 
+                   String description, double price, 
+                   Long amount) 
     {
+        m_id = id;
         m_name        = name;
+        m_description = description;
         m_price       = price;
         m_amount      = amount;
+    }
+
+    public Product(String name, String description,
+                   double price, Long amount) 
+    {
+        m_name        = name;
         m_description = description;
+        m_price       = price;
+        m_amount      = amount;
     }
 
     public String GetName()
@@ -68,12 +62,12 @@ public class Product
         m_price = price;
     }
 
-    public long GetAmount() 
+    public Long GetAmount() 
     {
         return m_amount;
     }
 
-    public void SetAmount(long amount) 
+    public void SetAmount(Long amount) 
     {
         m_amount = amount;
     }
@@ -81,5 +75,35 @@ public class Product
     public Long GetId() 
     {
         return m_id;
+    }
+
+    public void SetId(Long id) 
+    {
+        m_id = id;
+    }
+
+    @Override
+    public String toString() 
+    {
+        return "Product [id=" + m_id + ", name=" + m_name + 
+               ", desc=" + m_description + ", price=" + m_price +
+               ", amount=" + m_amount + "]";
+    }
+
+    public static boolean Compare(Product src, Product dest)
+    {
+        if (src.GetName().compareTo(dest.GetName()) != 0)
+            return false;
+
+        if (src.GetDescription().compareTo(dest.GetDescription()) != 0)
+            return false;
+
+        if (src.GetPrice() != dest.GetPrice())
+            return false;
+
+        if (src.GetAmount() != dest.GetAmount())
+            return false;
+
+        return true;
     }
 }
