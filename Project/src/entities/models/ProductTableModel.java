@@ -1,12 +1,14 @@
 package entities.models;
+
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
 import entities.Product;
 import entities.ProductDAO;
+import entities.Utilities;
+import exceptions.EmptyFieldException;
 import exceptions.InvalidProductObj;
 
 public class ProductTableModel extends AbstractTableModel
@@ -47,6 +49,9 @@ public class ProductTableModel extends AbstractTableModel
 				case 0:
 					throw new IllegalArgumentException("Cannot edit ID field: " + columnIndex);
 				case 1:
+					if (str_value.isEmpty())
+						throw new EmptyFieldException("The product name cannot be empty");
+					
 					target.SetName(str_value);
 					break;
 				case 2:
@@ -67,11 +72,11 @@ public class ProductTableModel extends AbstractTableModel
 		} 
 		catch (NumberFormatException nfe)
 		{
-			JOptionPane.showMessageDialog(null, "Cannot update table, reason: Invalid data format for this text field", "ZéBigod's Error Popup", JOptionPane.ERROR_MESSAGE);
+			Utilities.ShowPopupError("Cannot update table, reason: Invalid data format for this text field");
 		}
 		catch (Exception e) 
 		{
-			JOptionPane.showMessageDialog(null, "Cannot update table, reason: " + e.getMessage(), "ZéBigod's Error Popup", JOptionPane.ERROR_MESSAGE);
+			Utilities.ShowPopupError("Cannot update table, reason: " + e.getMessage());
 		}
 	}
 
@@ -108,6 +113,7 @@ public class ProductTableModel extends AbstractTableModel
 	@Override
 	public boolean isCellEditable(int rows, int cols) 
 	{
+		// all field's except id is editable
 		if (cols != 0)
 			return true;
 		else

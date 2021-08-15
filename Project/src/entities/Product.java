@@ -16,7 +16,7 @@ public class Product
                    String description, double price, 
                    Long amount) 
     {
-        m_id = id;
+        m_id          = id;
         m_name        = name;
         m_description = description;
         m_price       = price;

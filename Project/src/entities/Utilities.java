@@ -1,22 +1,46 @@
 package entities;
-import java.util.Vector;
-import java.util.List;
 
-public final class Utilities 
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+
+public final class Utilities
 {
-	public static <T> Vector<T> ToVector(List<T> values)
-    {
-        Vector<T> container = new Vector<>(values.size());
-        for (T value : values)
-            container.add(value);
-        return container;
-    }
+	public static void ShowPopup(String text, String title, int type)
+	{
+		JOptionPane.showMessageDialog(null, text, "ZéBigod's " + title, type);
+	}
 
-	public static <T> Vector<T> ToVector(T[] values)
-    {
-        Vector<T> container = new Vector<>(values.length);
-        for (T value : values)
-            container.add(value);
-        return container;
-    }
+	public static void ShowPopup(String text, int type)
+	{
+		JOptionPane.showMessageDialog(null, text, "", type);
+	}
+
+	public static void ShowPopupInfo(String text)
+	{
+		JOptionPane.showMessageDialog(null, text, "ZéBigod's Information", JOptionPane.INFORMATION_MESSAGE);
+	}
+
+	public static void ShowPopupWarn(String text)
+	{
+		JOptionPane.showMessageDialog(null, text, "ZéBigod's Warning", JOptionPane.WARNING_MESSAGE);
+	}
+
+	public static void ShowPopupError(String text)
+	{
+		JOptionPane.showMessageDialog(null, text, "ZéBigod's Error", JOptionPane.ERROR_MESSAGE);
+	}
+
+	public static void CentralizeAllTableCells(JTable table)
+	{
+		DefaultTableCellRenderer render = new DefaultTableCellRenderer();
+        render.setHorizontalAlignment(SwingConstants.CENTER);
+
+        for (int columnIndex = 0; columnIndex < table.getModel().getColumnCount(); columnIndex++)
+        {
+            table.getColumnModel().getColumn(columnIndex).setCellRenderer(render);
+        }
+	}
+
 }

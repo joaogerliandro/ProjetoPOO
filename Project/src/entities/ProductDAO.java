@@ -4,12 +4,11 @@ import exceptions.*;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 import java.sql.Statement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class ProductDAO extends ProductRepository
@@ -20,7 +19,7 @@ public class ProductDAO extends ProductRepository
 	}
 
     @Override
-    public void Add(Product p) 
+    public void Add(Product p)
 	{
 		try 
 		{
@@ -51,10 +50,7 @@ public class ProductDAO extends ProductRepository
 		}
 		catch (Exception e)
 		{
-			JOptionPane.showMessageDialog(null, 
-				"Error to add product: " + e.getMessage(), 
-				"Error", JOptionPane.ERROR_MESSAGE
-			);
+			Utilities.ShowPopupError("Error to add product: " + e.getMessage());
 		}
     }
 
@@ -64,7 +60,7 @@ public class ProductDAO extends ProductRepository
         List<Product> result = new ArrayList<>();
 		
         try (Statement stmt = m_connection.createStatement();
-             ResultSet rs = stmt.executeQuery(g_findall_query)) 
+             ResultSet rs   = stmt.executeQuery(g_findall_query)) 
 		{
             while (rs.next()) 
 			{
@@ -77,10 +73,7 @@ public class ProductDAO extends ProductRepository
         } 
 		catch (SQLException e) 
 		{
-            JOptionPane.showMessageDialog(null,
-				"Error to get products: " + e.getMessage(), 
-				"Error", JOptionPane.ERROR_MESSAGE
-			);
+			Utilities.ShowPopupError("Error to get products: " + e.getMessage());
         }
 
         return result;
@@ -109,10 +102,7 @@ public class ProductDAO extends ProductRepository
 		} 
 		catch (Exception e) 
 		{
-			JOptionPane.showMessageDialog(null,
-				"Error to edit product: " + e.getMessage(), 
-				"Error", JOptionPane.ERROR_MESSAGE
-			);
+			Utilities.ShowPopupError("Cannot find product: " + e.getMessage());
 		}
 
 		return -1L;
@@ -139,10 +129,7 @@ public class ProductDAO extends ProductRepository
 		} 
 		catch (Exception e) 
 		{
-			JOptionPane.showMessageDialog(null,
-				"Error to edit product: " + e.getMessage(), 
-				"Error", JOptionPane.ERROR_MESSAGE
-			);
+			Utilities.ShowPopupError("Cannot find product: " + e.getMessage());
 		}
 
 		return Optional.empty();
@@ -166,10 +153,7 @@ public class ProductDAO extends ProductRepository
 		} 
 		catch (Exception e) 
 		{
-			JOptionPane.showMessageDialog(null,
-				"Error to edit product: " + e.getMessage(), 
-				"Error", JOptionPane.ERROR_MESSAGE
-			);
+			Utilities.ShowPopupError("Error to edit product: " + e.getMessage());
 		}
     }
 
@@ -178,7 +162,7 @@ public class ProductDAO extends ProductRepository
 	{
 		// nao precisa fechar o stmt, pois como ele está em parenteses no try,
 		// é fechado implicitamente pelo bloco
-		try (PreparedStatement stmt = m_connection.prepareStatement("delete from products where id=?")) 
+		try (PreparedStatement stmt = m_connection.prepareStatement(g_remove_query)) 
 		{
 			stmt.setLong(1, product_id);
 			stmt.execute();
@@ -187,26 +171,20 @@ public class ProductDAO extends ProductRepository
         } 
 		catch (Exception e) 
 		{
-            JOptionPane.showMessageDialog(null,
-				"Error to remove product: " + e.getMessage(), 
-				"Error", JOptionPane.ERROR_MESSAGE
-			);
+			Utilities.ShowPopupError("Error to remove an product: " + e.getMessage());
         }
     }
 
 	@Override
     public void RemoveAll()
 	{
-		try (PreparedStatement stmt = m_connection.prepareStatement("delete from products where true")) 
+		try (PreparedStatement stmt = m_connection.prepareStatement(g_removeall_query)) 
 		{
 			stmt.execute();
         } 
 		catch (Exception e) 
 		{
-            JOptionPane.showMessageDialog(null,
-				"Error to remove all products: " + e.getMessage(), 
-				"Error", JOptionPane.ERROR_MESSAGE
-			);
+			Utilities.ShowPopupError("Error to remove all products: " + e.getMessage());
         }
 	}
 
