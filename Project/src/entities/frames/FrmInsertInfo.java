@@ -1,25 +1,26 @@
 package entities.frames;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import entities.Product;
-import entities.ProductDAO;
-
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Component;
+import java.awt.event.WindowEvent;
 
-public class FrmInsertInfo extends JFrame
+import entities.Utilities;
+import entities.Product;
+import entities.ProductDAO;
+public class FrmInsertInfo extends JDialog
 {
 	private ProductDAO m_productDAO;
 	private JPanel m_pnlContent;
@@ -36,9 +37,9 @@ public class FrmInsertInfo extends JFrame
 
 	private JButton m_btnInsert;
 
-	public FrmInsertInfo(ProductDAO product_dao) 
+	public FrmInsertInfo(Window owner, ProductDAO product_dao) 
 	{
-		super("ZéBigod's Insert Information");
+		super(owner, "ZéBigod's Insert Information");
 		m_productDAO = product_dao;
 		
 		SetupWindow();
@@ -51,14 +52,10 @@ public class FrmInsertInfo extends JFrame
 
 	private void SetupWindow() 
 	{
-		setDefaultLookAndFeelDecorated(true);
-		pack();
-
 		setSize(400, 300);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setLayout(new FlowLayout());
-		
 		toFront();
 	}
 
@@ -89,50 +86,93 @@ public class FrmInsertInfo extends JFrame
 
 		add(m_pnlContent);
 
-		// update gfx buffer
-		//setVisible(true);
+		setVisible(true);
 	}
 
 	private void SetupLabels()
 	{
-		m_lblName = new JLabel("Name: ");
-		m_lblDesc = new JLabel("Description: ");
-		m_lblPrice = new JLabel("Price: ");
+		m_lblName   = new JLabel("Name: ");
+		m_lblDesc   = new JLabel("Description: ");
+		m_lblPrice  = new JLabel("Price: ");
 		m_lblAmount = new JLabel("Amount: ");
 	}
 
 	private void SetupTextFields()
 	{
-		m_txtName = new JTextField(15);
-		m_txtDesc = new JTextField(15);
-		m_txtPrice = new JTextField(15);
+		m_txtName   = new JTextField(15);
+		m_txtDesc   = new JTextField(15);
+		m_txtPrice  = new JTextField(15);
 		m_txtAmount = new JTextField(15);
 	}
 
 	private void SetupButtons() 
 	{
 		m_btnInsert = new JButton("Insert");
+
 		m_btnInsert.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				
-				Product p = new Product(m_txtName.getText(),
-										m_txtDesc.getText(),
-										Double.parseDouble(m_txtPrice.getText()),
-										Long.parseLong(m_txtAmount.getText()));
-				
-				m_productDAO.Add(p);
-				
-				// Destroy the JFrame object
-				setVisible(false);
+				String name = "";
+				String desc = "";
+				Double price = 0.0;
+				Long amount = 0L;
 
-				m_txtName.setText("");
-				m_txtDesc.setText("");
-				m_txtPrice.setText("");
-				m_txtAmount.setText("");
+				try 
+				{
+					name = m_txtName.getText();
+
+					// the description could be empty
+					desc = m_txtDesc.getText();
+
+					if (name.isEmpty())
+					{
+						Utilities.ShowPopupWarn("Name text field cannot be empty");
+						return;
+					}
+
+					String str_price = m_txtPrice.getText();
+					if (str_price.isEmpty())
+					{
+						Utilities.ShowPopupWarn("Price text field cannot be empty");
+						return;
+					}
+
+					String str_amount = m_txtAmount.getText();
+					if (str_amount.isEmpty())
+					{
+						Utilities.ShowPopupWarn("Amount text field cannot be empty");
+						return;
+					}
+
+					price = Double.parseDouble(str_price);
+					amount = Long.parseLong(str_amount);
+				}
+				catch (NumberFormatException nfe)
+				{
+					Utilities.ShowPopupError("Invalid data format for text field: " + nfe.getMessage());
+					return;
+				}
+				catch (Exception ee)
+				{
+					Utilities.ShowPopupError("Unknown Error Ocurred: " + ee.getMessage());
+					return;
+				}
+				
+				m_productDAO.Add(new Product(name, desc, price, amount));
+				Utilities.ShowPopupInfo("Inserido com sucesso !");
+
+				CloseThisWindow();
 			}
 		});
 	}
+
+	private void CloseThisWindow() 
+	{
+		//Window this_window = SwingUtilities.getWindowAncestor(m_txtName);
+		WindowEvent CloseWindowEvent = new WindowEvent((Window) this, WindowEvent.WINDOW_CLOSING);
+		Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(CloseWindowEvent);
+	}
+
 }

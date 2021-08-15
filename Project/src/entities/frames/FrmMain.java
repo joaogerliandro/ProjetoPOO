@@ -1,9 +1,8 @@
 package entities.frames;
 
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Window;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -12,15 +11,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.Timer;
-import javax.swing.table.TableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.JOptionPane;
-import java.awt.BorderLayout;
 
 import entities.ProductDAO;
+import entities.Utilities;
 import entities.models.ProductTableModel;
-import javafx.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 public class FrmMain extends JFrame
 {
@@ -97,7 +93,7 @@ public class FrmMain extends JFrame
 
 	private void SetupWindow() 
 	{
-		setSize(600, 400);
+		setSize(840, 400);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setLayout(new BorderLayout());
@@ -114,8 +110,9 @@ public class FrmMain extends JFrame
 
 	private void SetupProductTable()
 	{
-		m_tblProducts = new JTable(new ProductTableModel(m_product_dao));
+		m_tblProducts      = new JTable(new ProductTableModel(m_product_dao));
 		m_tblProductsModel = (ProductTableModel) m_tblProducts.getModel();
+		Utilities.CentralizeAllTableCells(m_tblProducts);
 	}
 
 	private void SetupTablePanel()
@@ -124,14 +121,30 @@ public class FrmMain extends JFrame
 		m_tblProducts.setFillsViewportHeight(true);
 	}
 
+	private Window GetThisWindow()
+	{
+		return (Window) this;
+	}
+
 	private void SetupButtons() 
 	{
 		m_btnInsert = new JButton("Insert");
+
 		m_btnInsert.addActionListener(new ActionListener()
 		{
 			@Override
-			public void actionPerformed(java.awt.event.ActionEvent e) 
+			public void actionPerformed(ActionEvent e) 
 			{
+				FrmInsertInfo frmInsert = new FrmInsertInfo(GetThisWindow(), m_product_dao);
+
+				frmInsert.addWindowListener(new WindowAdapter() 
+				{
+                    @Override
+                    public void windowClosed(WindowEvent e) 
+					{
+                        RefreshTableData();
+                    }
+                });
 				// FAZER AQ
 			}
 		});
@@ -140,7 +153,7 @@ public class FrmMain extends JFrame
 		m_btnDelete.addActionListener(new ActionListener()
 		{
 			@Override
-			public void actionPerformed(java.awt.event.ActionEvent e) 
+			public void actionPerformed(ActionEvent e) 
 			{
 				int[] selected_rows = m_tblProducts.getSelectedRows();
 				
@@ -163,7 +176,7 @@ public class FrmMain extends JFrame
 		m_btnDeleteAll.addActionListener(new ActionListener()
 		{
 			@Override
-			public void actionPerformed(java.awt.event.ActionEvent e) 
+			public void actionPerformed(ActionEvent e)
 			{
 				m_product_dao.RemoveAll();
 				RefreshTableData();
@@ -174,7 +187,7 @@ public class FrmMain extends JFrame
 		m_btnUpdate.addActionListener(new ActionListener()
 		{
 			@Override
-			public void actionPerformed(java.awt.event.ActionEvent e) 
+			public void actionPerformed(ActionEvent e) 
 			{
 				RefreshTableData();
 			}
@@ -186,7 +199,7 @@ public class FrmMain extends JFrame
 		m_chkAutoUpdate = new JCheckBox("Auto Refresh", false);
 		m_chkAutoUpdate.addItemListener(new ItemListener() 
 		{    
-			public void itemStateChanged(java.awt.event.ItemEvent e) 
+			public void itemStateChanged(ItemEvent e) 
 			{                 
 				if (e.getStateChange() == 1) // checked
 				{
