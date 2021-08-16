@@ -2,6 +2,7 @@ package entities.frames;
 
 import java.awt.event.*;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Window;
 
 import javax.swing.JButton;
@@ -93,6 +94,7 @@ public class FrmMain extends JFrame
 	private void SetupWindow() 
 	{
 		setSize(840, 400);
+		setMinimumSize(new Dimension(840, 400));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setLayout(new BorderLayout());
@@ -139,12 +141,11 @@ public class FrmMain extends JFrame
 				frmInsert.addWindowListener(new WindowAdapter() 
 				{
                     @Override
-                    public void windowClosed(WindowEvent e) 
+                    public void windowClosed(WindowEvent e)
 					{
                         RefreshTableData();
                     }
                 });
-				// FAZER AQ
 			}
 		});
 

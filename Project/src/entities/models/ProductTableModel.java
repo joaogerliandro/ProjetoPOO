@@ -58,10 +58,26 @@ public class ProductTableModel extends AbstractTableModel
 					target.SetDescription(str_value);
 					break;
 				case 3:
-					target.SetPrice(Double.parseDouble(str_value));
+					double price = Double.parseDouble(str_value);
+					
+					if (price <= 0.0)
+					{
+						Utilities.ShowPopupWarn("Price text field must be greater than zero");
+						return;
+					}
+
+					target.SetPrice(price);
 					break;
 				case 4:
-					target.SetAmount(Long.parseLong(str_value));
+				    Long amount = Long.parseLong(str_value);
+					
+					if (amount <= 0.0)
+					{
+						Utilities.ShowPopupWarn("Amount text field must be greater than zero");
+						return;
+					}
+
+					target.SetAmount(amount);
 					break;
 				default:
 					throw new IllegalArgumentException("Table Out Bounds: " + columnIndex);

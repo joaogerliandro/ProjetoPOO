@@ -6,6 +6,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -56,6 +57,10 @@ public class FrmInsertInfo extends JDialog
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setLayout(new FlowLayout());
+		setResizable(false);
+
+		// Block Focus Parent Frame
+		setModal(true);
 		toFront();
 	}
 
@@ -147,7 +152,18 @@ public class FrmInsertInfo extends JDialog
 					}
 
 					price = Double.parseDouble(str_price);
+					if (price <= 0.0)
+					{
+						Utilities.ShowPopupWarn("Price text field must be greater than zero");
+						return;
+					}
+
 					amount = Long.parseLong(str_amount);
+					if (amount <= 0.0)
+					{
+						Utilities.ShowPopupWarn("Amount text field must be greater than zero");
+						return;
+					}
 				}
 				catch (NumberFormatException nfe)
 				{
@@ -161,7 +177,7 @@ public class FrmInsertInfo extends JDialog
 				}
 				
 				m_productDAO.Add(new Product(name, desc, price, amount));
-				Utilities.ShowPopupInfo("Inserido com sucesso !");
+				Utilities.ShowPopupInfo("Insert Successfully !");
 
 				CloseThisWindow();
 			}
@@ -170,7 +186,6 @@ public class FrmInsertInfo extends JDialog
 
 	private void CloseThisWindow() 
 	{
-		//Window this_window = SwingUtilities.getWindowAncestor(m_txtName);
 		WindowEvent CloseWindowEvent = new WindowEvent((Window) this, WindowEvent.WINDOW_CLOSING);
 		Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(CloseWindowEvent);
 	}
