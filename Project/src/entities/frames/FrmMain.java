@@ -189,8 +189,13 @@ public class FrmMain extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				m_product_dao.RemoveAll();
-				RefreshTableData();
+    			int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to perform this operation?", "ZéBigod's Warning", JOptionPane.YES_NO_OPTION);
+				
+				if (result == JOptionPane.YES_OPTION)
+				{
+					m_product_dao.RemoveAll();
+					RefreshTableData();
+				}
 			}
 		});
 		
