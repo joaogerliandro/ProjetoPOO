@@ -98,6 +98,17 @@ public class FrmMain extends JFrame
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setLayout(new BorderLayout());
+
+		addWindowListener(new WindowAdapter()
+		{
+			@Override
+			public void windowClosing(WindowEvent e) 
+			{
+				// close the connection
+				m_product_dao.Release();
+				super.windowClosing(e);
+			}
+		});
 	}
 
 	private void AddComponents()
