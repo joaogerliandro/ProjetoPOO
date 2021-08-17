@@ -2,8 +2,9 @@ package entities.frames;
 
 import java.awt.event.*;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.Color;
 import java.awt.Window;
+import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -29,6 +30,7 @@ public class FrmMain extends JFrame
 	/* Panels */
 	private JScrollPane m_pnlScrollTable;
 	private JPanel m_pnlButtons;
+	private Color m_pnlButtonsBackgroundColor = new Color(235, 235, 235);
 
 	/* Tables */
 	private JTable m_tblProducts;
@@ -79,7 +81,8 @@ public class FrmMain extends JFrame
 	private void SetupToolbarPanel() 
 	{
 		m_pnlButtons = new JPanel();
-		m_pnlButtons.setLayout(new java.awt.FlowLayout());
+		m_pnlButtons.setBackground(m_pnlButtonsBackgroundColor);
+		m_pnlButtons.setLayout(new FlowLayout());
 		
 		SetupButtons();
 		SetupCheckBoxes();  
@@ -94,7 +97,7 @@ public class FrmMain extends JFrame
 	private void SetupWindow() 
 	{
 		setSize(840, 400);
-		setMinimumSize(new Dimension(840, 400));
+		setMinimumSize(getSize());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setLayout(new BorderLayout());
@@ -213,6 +216,8 @@ public class FrmMain extends JFrame
 	private void SetupCheckBoxes() 
 	{
 		m_chkAutoUpdate = new JCheckBox("Auto Refresh", false);
+		m_chkAutoUpdate.setBackground(m_pnlButtons.getBackground());
+
 		m_chkAutoUpdate.addItemListener(new ItemListener() 
 		{    
 			public void itemStateChanged(ItemEvent e) 

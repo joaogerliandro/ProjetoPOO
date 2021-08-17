@@ -191,19 +191,12 @@ public class ProductDAO extends ProductRepository
 	@Override
     public boolean Remove(Product target)
 	{
-		List<Product> database_products = GetProducts();
-		if (database_products.size() == 0)
+		Long id = Find(target);
+
+		if (id == -1)
 			return false;
-
-		for (Product product : database_products)
-		{
-			if (Product.Compare(product, target))
-			{
-				Remove(product.GetId());
-				return true;
-			}
-		}
-
-		return false;
+		
+		Remove(id);
+		return true;
 	}
 }
