@@ -21,7 +21,7 @@ public class ProductDAO extends ProductRepository
     @Override
     public void Add(Product p)
 	{
-		try 
+		try
 		{
 			if (p == null)
 				throw new InvalidProductObj("Product object cannot be null");

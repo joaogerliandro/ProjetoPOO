@@ -13,12 +13,12 @@ public class Program
         // Clear all registers in database
         dao.RemoveAll();
 
-        for (int i = 0; i < 15; ++i)
+        for (int i = 0; i < 50; ++i)
         {
             dao.Add(new Product("Monitor LG - LG29WK600", "A PC Monitor", 1800.0, 1L));
         }
 
-        SwingUtilities.invokeLater(new Runnable() 
+        SwingUtilities.invokeLater(new Runnable()
         {
             @Override
             public void run()

@@ -6,7 +6,6 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -21,6 +20,7 @@ import java.awt.event.WindowEvent;
 import entities.Utilities;
 import entities.Product;
 import entities.ProductDAO;
+
 public class FrmInsertInfo extends JDialog
 {
 	private ProductDAO m_productDAO;

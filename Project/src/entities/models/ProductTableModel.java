@@ -2,7 +2,6 @@ package entities.models;
 
 import java.util.Arrays;
 import java.util.List;
-
 import javax.swing.table.AbstractTableModel;
 
 import entities.Product;
@@ -10,6 +9,8 @@ import entities.ProductDAO;
 import entities.Utilities;
 import exceptions.EmptyFieldException;
 import exceptions.InvalidProductObj;
+
+import java.util.function.Consumer;
 
 public class ProductTableModel extends AbstractTableModel
 {
@@ -40,7 +41,8 @@ public class ProductTableModel extends AbstractTableModel
 	public void setValueAt(Object value, int rowIndex, int columnIndex) throws IllegalArgumentException
 	{
 		String str_value = (String) value;
-		Product target = m_products.get(rowIndex);
+		Product source = m_products.get(rowIndex);
+		Product target = source;
 
 		try 
 		{
@@ -84,7 +86,9 @@ public class ProductTableModel extends AbstractTableModel
 			}
 
 			m_prod_dao.Edit(target);
-			fireTableCellUpdated(rowIndex, columnIndex);
+
+			// Update only the altered value
+			m_products.set(rowIndex, target);
 		} 
 		catch (NumberFormatException nfe)
 		{
@@ -130,7 +134,7 @@ public class ProductTableModel extends AbstractTableModel
 	public boolean isCellEditable(int rows, int cols) 
 	{
 		// all field's except id is editable
-		if (cols != 0)
+		if (cols > 1)
 			return true;
 		else
 			return false;
@@ -146,5 +150,23 @@ public class ProductTableModel extends AbstractTableModel
 	{
 		UpdateProducts();
 		super.fireTableDataChanged();
+	}
+
+	public void ForEach(Consumer<? super Product> action) 
+	{
+        for (Product p : m_products) 
+		{
+            action.accept(p);
+        }
+    }
+
+	public Product GetProduct(int index)
+	{
+		return m_products.get(index);
+	}
+
+	public void RemoveTableProduct(int index)
+	{
+		m_products.remove(index);
 	}
 }

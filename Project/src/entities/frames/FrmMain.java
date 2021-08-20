@@ -5,6 +5,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Window;
 import java.awt.FlowLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -23,30 +25,33 @@ public class FrmMain extends JFrame
 {
 	/* Data Members */
 	private ProductDAO m_product_dao;
-
+	
 	/* Default Refresh Time */
 	static final int g_refresh_time_seconds = 3;
-
+	
 	/* Panels */
 	private JScrollPane m_pnlScrollTable;
 	private JPanel m_pnlButtons;
 	private Color m_pnlButtonsBackgroundColor = new Color(235, 235, 235);
-
+	
 	/* Tables */
 	private JTable m_tblProducts;
 	private ProductTableModel m_tblProductsModel;
-
+	
 	/* Buttons */
 	private JButton m_btnInsert;
 	private JButton m_btnDelete;
 	private JButton m_btnUpdate;
 	private JButton m_btnDeleteAll;
-
+	
 	/* Checkboxes */
 	private JCheckBox m_chkAutoUpdate;
-
+	
 	/* Timers */
 	Timer m_auto_update_timer;
+	
+	/* Child Frames */
+	private FrmInsertInfo m_frmInsertInfo;
 	
 	public FrmMain(ProductDAO product_dao)
 	{
@@ -60,7 +65,7 @@ public class FrmMain extends JFrame
 		SetupToolbarPanel();
 		AddComponents();
 	}
-
+	
 	private void SetupAutoRefresh() 
 	{
 		// atualiza a tabela a cada "delay_in_seconds" segundos
@@ -74,10 +79,10 @@ public class FrmMain extends JFrame
 				RefreshTableData();
 			}
 		};
-
+		
 		m_auto_update_timer.addActionListener(listener);
 	}
-
+	
 	private void SetupToolbarPanel() 
 	{
 		m_pnlButtons = new JPanel();
@@ -86,14 +91,14 @@ public class FrmMain extends JFrame
 		
 		SetupButtons();
 		SetupCheckBoxes();  
-
+		
 		m_pnlButtons.add(m_btnInsert);
 		m_pnlButtons.add(m_btnDelete);
 		m_pnlButtons.add(m_btnDeleteAll);
 		m_pnlButtons.add(m_btnUpdate);
 		m_pnlButtons.add(m_chkAutoUpdate);
 	}
-
+	
 	private void SetupWindow() 
 	{
 		setSize(840, 400);
@@ -101,7 +106,7 @@ public class FrmMain extends JFrame
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setLayout(new BorderLayout());
-
+		
 		addWindowListener(new WindowAdapter()
 		{
 			@Override
@@ -113,86 +118,81 @@ public class FrmMain extends JFrame
 			}
 		});
 	}
-
+	
 	private void AddComponents()
 	{
 		add(m_pnlScrollTable, BorderLayout.CENTER);
 		add(m_pnlButtons, BorderLayout.SOUTH);
-
+		
 		// update gfx buffer
 		setVisible(true);
 	}
-
+	
 	private void SetupProductTable()
 	{
-		m_tblProducts      = new JTable(new ProductTableModel(m_product_dao));
+		m_tblProducts  = new JTable(new ProductTableModel(m_product_dao));
+		
+		m_tblProducts.addKeyListener(new KeyAdapter()
+		{
+			@Override
+			public void keyPressed(KeyEvent e) 
+			{
+				if (e.getKeyCode() == KeyEvent.VK_DELETE)
+				{
+					DeleteTableRegister();
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_INSERT)
+				{
+					CallInsertFrame();
+				}
+			}
+		});
+		
 		m_tblProductsModel = (ProductTableModel) m_tblProducts.getModel();
 		Utilities.CentralizeAllTableCells(m_tblProducts);
 	}
-
+	
 	private void SetupTablePanel()
 	{
 		m_pnlScrollTable = new JScrollPane(m_tblProducts);
 		m_tblProducts.setFillsViewportHeight(true);
 	}
-
+	
 	private Window GetThisWindow()
 	{
 		return (Window) this;
 	}
-
+	
 	private void SetupButtons() 
 	{
 		m_btnInsert = new JButton("Insert");
-
+		
 		m_btnInsert.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				FrmInsertInfo frmInsert = new FrmInsertInfo(GetThisWindow(), m_product_dao);
-
-				frmInsert.addWindowListener(new WindowAdapter() 
-				{
-                    @Override
-                    public void windowClosed(WindowEvent e)
-					{
-                        RefreshTableData();
-                    }
-                });
+				CallInsertFrame();
 			}
 		});
-
+		
 		m_btnDelete = new JButton("Delete");
 		m_btnDelete.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				int[] selected_rows = m_tblProducts.getSelectedRows();
-				
-				if (selected_rows.length == 0)
-				{
-					JOptionPane.showMessageDialog(null, "You need to select a line before deleting it", "ZéBigod's Warning", JOptionPane.WARNING_MESSAGE);
-					return;
-				}
-
-				for (int row : selected_rows)
-				{
-					m_product_dao.Remove((Long) m_tblProducts.getValueAt(row, 0));
-				}
-				
-				RefreshTableData();
+				DeleteTableRegister();
 			}
 		});
-
+		
 		m_btnDeleteAll = new JButton("Delete All");
 		m_btnDeleteAll.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-    			int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to perform this operation?", "ZéBigod's Warning", JOptionPane.YES_NO_OPTION);
+				int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to perform this operation?", "ZéBigod's Warning", JOptionPane.YES_NO_OPTION);
 				
 				if (result == JOptionPane.YES_OPTION)
 				{
@@ -212,12 +212,26 @@ public class FrmMain extends JFrame
 			}
 		});
 	}
-
+	
+	private void CallInsertFrame()
+	{
+		m_frmInsertInfo = new FrmInsertInfo(GetThisWindow(), m_product_dao);
+		
+		m_frmInsertInfo.addWindowListener(new WindowAdapter() 
+		{
+			@Override
+			public void windowClosed(WindowEvent e)
+			{
+				RefreshTableData();
+			}
+		});
+	}
+	
 	private void SetupCheckBoxes() 
 	{
 		m_chkAutoUpdate = new JCheckBox("Auto Refresh", false);
 		m_chkAutoUpdate.setBackground(m_pnlButtons.getBackground());
-
+		
 		m_chkAutoUpdate.addItemListener(new ItemListener() 
 		{    
 			public void itemStateChanged(ItemEvent e) 
@@ -225,33 +239,51 @@ public class FrmMain extends JFrame
 				if (e.getStateChange() == 1) // checked
 				{
 					if (!m_auto_update_timer.isRunning())
-						m_auto_update_timer.start();
+					m_auto_update_timer.start();
 				}
 				else 
 				{
 					if (m_auto_update_timer.isRunning())
-						m_auto_update_timer.stop();
+					m_auto_update_timer.stop();
 				}
 			}    
 		});
 	}
-
+	
 	public void SetRefreshTime(int delay_seconds)
 	{
 		boolean running = m_auto_update_timer.isRunning();
 		if (running)
-			m_auto_update_timer.stop();
+		m_auto_update_timer.stop();
 		
 		m_auto_update_timer.setInitialDelay(delay_seconds * 1000);
 		m_auto_update_timer.setDelay(delay_seconds * 1000);
-
+		
 		if (running)
-			m_auto_update_timer.restart();
+		m_auto_update_timer.restart();
 	}
-
+	
 	private void RefreshTableData()
 	{
 		m_tblProductsModel.fireTableDataChanged();
 		m_tblProducts.repaint();
+	}
+	
+	private void DeleteTableRegister() 
+	{
+		int[] selected_rows = m_tblProducts.getSelectedRows();
+		
+		if (selected_rows.length == 0)
+		{
+			JOptionPane.showMessageDialog(null, "You need to select a line before deleting it", "ZéBigod's Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		
+		for (int row : selected_rows)
+		{
+			m_product_dao.Remove((Long) m_tblProducts.getValueAt(row, 0));
+		}
+
+		RefreshTableData();
 	}
 }

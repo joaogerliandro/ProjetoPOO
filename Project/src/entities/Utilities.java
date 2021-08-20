@@ -42,5 +42,4 @@ public final class Utilities
             table.getColumnModel().getColumn(columnIndex).setCellRenderer(render);
         }
 	}
-
 }
