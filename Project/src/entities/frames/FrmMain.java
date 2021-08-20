@@ -14,7 +14,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.Timer;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.JOptionPane;
 
 import entities.ProductDAO;
@@ -131,6 +133,8 @@ public class FrmMain extends JFrame
 	private void SetupProductTable()
 	{
 		m_tblProducts  = new JTable(new ProductTableModel(m_product_dao));
+		DefaultTableCellRenderer renderer = (DefaultTableCellRenderer)m_tblProducts.getTableHeader().getDefaultRenderer();
+		renderer.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		m_tblProducts.addKeyListener(new KeyAdapter()
 		{
@@ -186,7 +190,7 @@ public class FrmMain extends JFrame
 			}
 		});
 		
-		m_btnDeleteAll = new JButton("Delete All");
+		m_btnDeleteAll = new JButton("Clear");
 		m_btnDeleteAll.addActionListener(new ActionListener()
 		{
 			@Override

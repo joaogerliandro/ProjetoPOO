@@ -16,6 +16,7 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.awt.Color;
 
 import entities.Utilities;
 import entities.Product;
@@ -67,6 +68,7 @@ public class FrmInsertInfo extends JDialog
 	private void AddComponents()
 	{
 		m_pnlContent = new JPanel();
+
 		m_pnlContent.setSize(400, 300);
 		m_pnlContent.setLayout(new BoxLayout(m_pnlContent, BoxLayout.Y_AXIS));
 
@@ -86,7 +88,7 @@ public class FrmInsertInfo extends JDialog
 		m_pnlContent.add(m_lblAmount);
 		m_pnlContent.add(m_txtAmount);
 
-		m_pnlContent.add(Box.createRigidArea(new Dimension(68, 20)));
+		m_pnlContent.add(Box.createRigidArea(new Dimension(68, 10)));
 		m_pnlContent.add(m_btnInsert);
 
 		add(m_pnlContent);
