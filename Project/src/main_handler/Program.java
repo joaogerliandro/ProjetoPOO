@@ -1,23 +1,34 @@
 package main_handler;
 
-import javax.swing.SwingUtilities;
 import entities.*;
 import entities.frames.*;
 
+import java.util.logging.Logger;
+import java.util.logging.Level;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.UIManager;
+import javax.swing.SwingUtilities;
+
 public class Program
 {
+	public static void AddDefaultProducts(ProductDAO dao)
+	{
+		dao.Add(new Product("SSD ORICO 1TB USB 3.2", "State-Solid-Drive", 1250.0, 1L));
+		dao.Add(new Product("Xiaomi Airdots 3 Pro", "Intra-auricular headphone", 350.0, 2L));
+        dao.Add(new Product("Microfone Gamer QuadCast", "Super bom", 350.0, 2L));
+	    dao.Add(new Product("Teclado PiscaPisca Pichau ARGBX", "Keypad Gamer", 750, 1L));
+        dao.Add(new Product("Mouse Sem Fio Mamba HyperFlux, Chroma, 16000DPI", "Mouse Gamer", 1000.0, 1L));
+        dao.Add(new Product("Monitor Dell UltraSharp de 31.5 8K UP3218K", "", 32000.0, 1L));
+    }
+
     public static void main(String args[]) 
     {
         ProductDAO dao = new ProductDAO();
 
         // Clear all registers in database
         dao.RemoveAll();
-
-        for (int i = 0; i < 50; ++i)
-        {
-            dao.Add(new Product("Monitor LG - LG29WK600", "A PC Monitor", 1800.0, 1L));
-        }
-
+		
+		AddDefaultProducts(dao);
 		SetSkinTheme();
 
         SwingUtilities.invokeLater(new Runnable()
@@ -32,32 +43,34 @@ public class Program
 
 	private static void SetSkinTheme() 
 	{
+		final String frmMainClassName = FrmMain.class.getName();
+
 		try 
 		{
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels())
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels())
 			{
-                if ("Nimbus".equals(info.getName())) 
+                if (info.getName().equals("Nimbus")) 
 				{
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
             }
         } 
 		catch (ClassNotFoundException ex) 
 		{
-            java.util.logging.Logger.getLogger(FrmMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            Logger.getLogger(frmMainClassName).log(Level.SEVERE, null, ex);
         } 
 		catch (InstantiationException ex) 
 		{
-            java.util.logging.Logger.getLogger(FrmMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            Logger.getLogger(frmMainClassName).log(Level.SEVERE, null, ex);
         } 
 		catch (IllegalAccessException ex) 
 		{
-            java.util.logging.Logger.getLogger(FrmMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            Logger.getLogger(frmMainClassName).log(Level.SEVERE, null, ex);
         } 
-		catch (javax.swing.UnsupportedLookAndFeelException ex) 
+		catch (UnsupportedLookAndFeelException ex) 
 		{
-            java.util.logging.Logger.getLogger(FrmMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            Logger.getLogger(frmMainClassName).log(Level.SEVERE, null, ex);
         }
 	}
 }

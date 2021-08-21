@@ -134,7 +134,7 @@ public class ProductTableModel extends AbstractTableModel
 	public boolean isCellEditable(int rows, int cols) 
 	{
 		// all field's except id is editable
-		if (cols > 1)
+		if (cols != 0)
 			return true;
 		else
 			return false;

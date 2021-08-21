@@ -16,7 +16,6 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
-import java.awt.Color;
 
 import entities.Utilities;
 import entities.Product;
@@ -29,7 +28,7 @@ public class FrmInsertInfo extends JDialog
 
 	private JLabel m_lblName;
 	private JLabel m_lblDesc;
-	private JLabel m_lblPrice;
+	private JLabel m_lblPrice; 
 	private JLabel m_lblAmount;
 
 	private JTextField m_txtName;
@@ -193,3 +192,9 @@ public class FrmInsertInfo extends JDialog
 	}
 
 }
+
+/* 
+
+
+
+*/
