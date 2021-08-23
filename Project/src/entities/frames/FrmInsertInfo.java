@@ -160,7 +160,7 @@ public class FrmInsertInfo extends JDialog
 					}
 
 					amount = Long.parseLong(str_amount);
-					if (amount <= 0.0)
+					if (amount <= 0L)
 					{
 						Utilities.ShowPopupWarn("Amount text field must be greater than zero");
 						return;
@@ -192,9 +192,3 @@ public class FrmInsertInfo extends JDialog
 	}
 
 }
-
-/* 
-
-
-
-*/

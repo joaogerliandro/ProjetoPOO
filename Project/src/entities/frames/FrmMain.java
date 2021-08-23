@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
 import entities.ProductDAO;
 import entities.Utilities;
 import entities.models.ProductTableModel;
+import entities.Utilities;
 
 public class FrmMain extends JFrame
 {
@@ -279,7 +280,7 @@ public class FrmMain extends JFrame
 		
 		if (selected_rows.length == 0)
 		{
-			JOptionPane.showMessageDialog(null, "You need to select a line before deleting it", "ZéBigod's Warning", JOptionPane.WARNING_MESSAGE);
+			Utilities.ShowPopupWarn("You need to select a line before deleting it");
 			return;
 		}
 		

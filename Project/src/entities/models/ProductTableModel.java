@@ -73,7 +73,7 @@ public class ProductTableModel extends AbstractTableModel
 				case 4:
 				    Long amount = Long.parseLong(str_value);
 					
-					if (amount <= 0.0)
+					if (amount <= 0L)
 					{
 						Utilities.ShowPopupWarn("Amount text field must be greater than zero");
 						return;
