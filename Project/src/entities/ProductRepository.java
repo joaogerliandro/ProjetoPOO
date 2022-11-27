@@ -13,11 +13,11 @@ public abstract class ProductRepository implements IProductRepository
 	*/
 
 	protected Connection m_connection;
-	protected static final String g_insertion_query = "insert into products (name, description, price, amount) values (?, ?, ?, ?)";
-	protected static final String g_findall_query   = "select * from products";
-	protected static final String g_update_query    = "update products set name=?, description=?, price=?, amount=? where id = ?";
-	protected static final String g_remove_query    = "delete from products where id=?";
-	protected static final String g_removeall_query = "delete from products where true";
+	protected static final String g_insertion_query = "insert into bd_product (name, description, price, amount) values (?, ?, ?, ?)";
+	protected static final String g_findall_query   = "select * from bd_product";
+	protected static final String g_update_query    = "update bd_product set name=?, description=?, price=?, amount=? where id = ?";
+	protected static final String g_remove_query    = "delete from bd_product where id=?";
+	protected static final String g_removeall_query = "delete from bd_product where true";
 	
 	// close and free all resources
 	public void Release()
