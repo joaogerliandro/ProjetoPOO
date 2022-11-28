@@ -11,24 +11,29 @@ import javax.swing.SwingUtilities;
 
 public class Program
 {
-	public static void AddDefaultProducts(ProductDAO dao)
+	public static void AddDefaultProducts()
 	{
-		dao.Add(new Product("SSD ORICO 1TB USB 3.2", "State-Solid-Drive", 1250.0, 1L));
-		dao.Add(new Product("Xiaomi Airdots 3 Pro", "Intra-auricular headphone", 350.0, 2L));
-        dao.Add(new Product("Microfone Gamer QuadCast", "Super bom", 350.0, 2L));
-	    dao.Add(new Product("Teclado PiscaPisca Pichau ARGBX", "Keypad Gamer", 750, 1L));
-        dao.Add(new Product("Mouse Sem Fio Mamba HyperFlux, Chroma, 16000DPI", "Mouse Gamer", 1000.0, 1L));
-        dao.Add(new Product("Monitor Dell UltraSharp de 31.5 8K UP3218K", "", 32000.0, 1L));
-    }
+		final Product GraphicsCardModel = new Product("", "graphics card for pc", 1000.0, 1L);
+		
+		Product Rtx3060TI = GraphicsCardModel.Clone()
+											 .SetName("Rtx 3060 TI")
+											 .SetPrice(2500);
+						 
+		ProductDAO.GetInstance().Add(new Product("SSD ORICO 1TB USB 3.2", "State-Solid-Drive", 1250.0, 1L));
+		ProductDAO.GetInstance().Add(new Product("Xiaomi Airdots 3 Pro", "Intra-auricular headphone", 350.0, 2L));
+        ProductDAO.GetInstance().Add(new Product("Microfone Gamer QuadCast", "Super bom", 350.0, 2L));
+	    ProductDAO.GetInstance().Add(new Product("Teclado PiscaPisca Pichau ARGBX", "Keypad Gamer", 750, 1L));
+        ProductDAO.GetInstance().Add(new Product("Mouse Sem Fio Mamba HyperFlux, Chroma, 16000DPI", "Mouse Gamer", 1000.0, 1L));
+		ProductDAO.GetInstance().Add(new Product("Monitor Dell UltraSharp de 31.5 8K UP3218K", "", 32000.0, 1L));
+		ProductDAO.GetInstance().Add(Rtx3060TI);
+	}
 
     public static void main(String args[]) 
     {
-        ProductDAO dao = new ProductDAO();
-
         // Clear all registers in database
-        dao.RemoveAll();
+        ProductDAO.GetInstance().RemoveAll();
 		
-		AddDefaultProducts(dao);
+		AddDefaultProducts();
 		SetSkinTheme();
 
         SwingUtilities.invokeLater(new Runnable()
@@ -36,9 +41,9 @@ public class Program
             @Override
             public void run()
             {
-                new FrmMain(dao);
+                new FrmMain();
             }
-        });
+		});
     }
 
 	private static void SetSkinTheme() 

@@ -23,7 +23,6 @@ import entities.ProductDAO;
 
 public class FrmInsertInfo extends JDialog
 {
-	private ProductDAO m_productDAO;
 	private JPanel m_pnlContent;
 
 	private JLabel m_lblName;
@@ -38,10 +37,9 @@ public class FrmInsertInfo extends JDialog
 
 	private JButton m_btnInsert;
 
-	public FrmInsertInfo(Window owner, ProductDAO product_dao) 
+	public FrmInsertInfo(Window owner) 
 	{
 		super(owner, "ZéBigod's Insert Information");
-		m_productDAO = product_dao;
 		
 		SetupWindow();
 		SetupLabels();
@@ -177,7 +175,7 @@ public class FrmInsertInfo extends JDialog
 					return;
 				}
 				
-				m_productDAO.Add(new Product(name, desc, price, amount));
+				ProductDAO.GetInstance().Add(new Product(name, desc, price, amount));
 				Utilities.ShowPopupInfo("Insert Successfully !");
 
 				CloseThisWindow();
@@ -190,5 +188,4 @@ public class FrmInsertInfo extends JDialog
 		WindowEvent CloseWindowEvent = new WindowEvent((Window) this, WindowEvent.WINDOW_CLOSING);
 		Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(CloseWindowEvent);
 	}
-
 }

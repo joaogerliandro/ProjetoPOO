@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class ConnectionFactory
 {
-	private String m_url  = "jdbc:mysql://localhost:3306/bd_product";
+	private String m_url  = "jdbc:mysql://localhost:3306/zbdb";
 	private String m_user = "root";
 	private String m_psw  = "root";
 

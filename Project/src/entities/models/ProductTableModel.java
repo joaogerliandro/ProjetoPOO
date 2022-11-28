@@ -16,11 +16,9 @@ public class ProductTableModel extends AbstractTableModel
 {
 	private List<Product> m_products;
 	private List<String> m_header_columns;
-	private ProductDAO m_prod_dao;
 	
-	public ProductTableModel(ProductDAO prod_dao)
+	public ProductTableModel()
 	{
-		m_prod_dao = prod_dao;
 		UpdateProducts();
 		m_header_columns = Arrays.asList("ID", "Name", "Description", "Price", "Amount");
 	}
@@ -85,7 +83,7 @@ public class ProductTableModel extends AbstractTableModel
 					throw new IllegalArgumentException("Table Out Bounds: " + columnIndex);
 			}
 
-			m_prod_dao.Edit(target);
+			ProductDAO.GetInstance().Edit(target);
 
 			// Update only the altered value
 			m_products.set(rowIndex, target);
@@ -142,7 +140,7 @@ public class ProductTableModel extends AbstractTableModel
 
 	private void UpdateProducts()
 	{
-		m_products = m_prod_dao.GetProducts();
+		m_products = ProductDAO.GetInstance().GetProducts();
 	}
 
 	@Override
