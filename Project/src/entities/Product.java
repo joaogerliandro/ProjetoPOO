@@ -1,6 +1,6 @@
 package entities;
 
-public class Product
+public class Product extends IClonable<Product>
 {
     private Long   m_id = 0L;
     private String m_name;
@@ -9,8 +9,25 @@ public class Product
     private Long   m_amount;
 
     public Product()
-    {
+	{
+	}
+
+	public Product(Product target) 
+	{
+		if (target != null) 
+		{
+			m_id          = target.m_id;
+			m_name        = target.m_name;
+			m_description = target.m_description;
+			m_price       = target.m_price;
+			m_amount      = target.m_amount;
+        }
     }
+	
+	public Product Clone()
+	{
+		return new Product(this);
+	}
 
     public Product(Long id, String name, 
                    String description, double price, 
@@ -37,9 +54,10 @@ public class Product
         return m_name;
     }
 
-    public void SetName(String name) 
+    public Product SetName(String name) 
     {
-        m_name = name;
+		m_name = name;
+		return this;
     }
 
     public String GetDescription() 
@@ -47,9 +65,10 @@ public class Product
         return m_description;
     }
 
-    public void SetDescription(String description)
+    public Product SetDescription(String description)
     {
-        m_description = description;
+		m_description = description;
+		return this;
     }
 
     public double GetPrice()
@@ -57,9 +76,10 @@ public class Product
         return m_price;
     }
 
-    public void SetPrice(double price) 
+    public Product SetPrice(double price) 
     {
-        m_price = price;
+		m_price = price;
+		return this;
     }
 
     public Long GetAmount() 
@@ -67,9 +87,10 @@ public class Product
         return m_amount;
     }
 
-    public void SetAmount(Long amount) 
+    public Product SetAmount(Long amount) 
     {
-        m_amount = amount;
+		m_amount = amount;
+		return this;
     }
 
     public Long GetId() 
@@ -77,9 +98,10 @@ public class Product
         return m_id;
     }
 
-    public void SetId(Long id) 
+    public Product SetId(Long id) 
     {
-        m_id = id;
+		m_id = id;
+		return this;
     }
 
     @Override

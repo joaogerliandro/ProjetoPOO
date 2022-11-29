@@ -22,13 +22,9 @@ import javax.swing.JOptionPane;
 import entities.ProductDAO;
 import entities.Utilities;
 import entities.models.ProductTableModel;
-import entities.Utilities;
 
 public class FrmMain extends JFrame
 {
-	/* Data Members */
-	private ProductDAO m_product_dao;
-	
 	/* Default Refresh Time */
 	static final int g_refresh_time_seconds = 3;
 	
@@ -56,10 +52,9 @@ public class FrmMain extends JFrame
 	/* Child Frames */
 	private FrmInsertInfo m_frmInsertInfo;
 	
-	public FrmMain(ProductDAO product_dao)
+	public FrmMain()
 	{
 		super("ZéBigod's Product Manager");
-		m_product_dao = (product_dao == null) ? new ProductDAO() : product_dao;
 		
 		SetupWindow();
 		SetupProductTable();
@@ -116,7 +111,7 @@ public class FrmMain extends JFrame
 			public void windowClosing(WindowEvent e) 
 			{
 				// close the connection
-				m_product_dao.Release();
+				ProductDAO.GetInstance().Release();
 				super.windowClosing(e);
 			}
 		});
@@ -133,7 +128,7 @@ public class FrmMain extends JFrame
 	
 	private void SetupProductTable()
 	{
-		m_tblProducts  = new JTable(new ProductTableModel(m_product_dao));
+		m_tblProducts  = new JTable(new ProductTableModel());
 		DefaultTableCellRenderer renderer = (DefaultTableCellRenderer)m_tblProducts.getTableHeader().getDefaultRenderer();
 		renderer.setHorizontalAlignment(SwingConstants.CENTER);
 		
@@ -201,7 +196,7 @@ public class FrmMain extends JFrame
 				
 				if (result == JOptionPane.YES_OPTION)
 				{
-					m_product_dao.RemoveAll();
+					ProductDAO.GetInstance().RemoveAll();
 					RefreshTableData();
 				}
 			}
@@ -220,7 +215,7 @@ public class FrmMain extends JFrame
 	
 	private void CallInsertFrame()
 	{
-		m_frmInsertInfo = new FrmInsertInfo(GetThisWindow(), m_product_dao);
+		m_frmInsertInfo = new FrmInsertInfo(GetThisWindow());
 		
 		m_frmInsertInfo.addWindowListener(new WindowAdapter() 
 		{
@@ -286,7 +281,7 @@ public class FrmMain extends JFrame
 		
 		for (int row : selected_rows)
 		{
-			m_product_dao.Remove((Long) m_tblProducts.getValueAt(row, 0));
+			ProductDAO.GetInstance().Remove((Long) m_tblProducts.getValueAt(row, 0));
 		}
 
 		RefreshTableData();

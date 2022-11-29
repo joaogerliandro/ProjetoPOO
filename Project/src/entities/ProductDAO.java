@@ -13,9 +13,18 @@ import java.util.Optional;
 
 public class ProductDAO extends ProductRepository
 {
-	public ProductDAO()
+	private static ProductDAO m_instance;
+
+	private ProductDAO()
 	{
 		m_connection = new ConnectionFactory().GetConnection();
+	}
+
+	public static ProductDAO GetInstance()
+	{
+		if (m_instance == null)
+			m_instance = new ProductDAO();
+		return m_instance;
 	}
 
     @Override
